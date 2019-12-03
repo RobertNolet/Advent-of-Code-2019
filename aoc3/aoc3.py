@@ -8,24 +8,33 @@ Created on Tue Dec  3 09:14:47 2019
 
 import re
 
+# Map directions D, L, R, U to tuples (dx,dy)
 dirs = {'D' : (0,-1),
         'L' : (-1,0),
         'R' : (+1,0),
         'U' : (0,+1)}
+
+# Regular expression for parsing direction+length strings
 pat = re.compile('([DLRU])(\d+)')
 
-
+# Manhatten distance
 def dist(p):
     return abs(p[0]) + abs(p[1])
 
+# Create a list of points (x,y) from a list of direction+length strings
 def create_path(ls):
+    # Map the list of direction strings to a list of tuples ((dx,dy), length)
     route = map(lambda r: (dirs[r.group(1)], int(r.group(2))), map(pat.match, ls))
+    
+    # Set origin of path
     (x,y) = (0,0)
     path = []
-    for (d, l) in route:
-        path.extend([(x + i*d[0], y + i*d[1]) for i in range(1,l+1)])
-        x += l*d[0]
-        y += l*d[1]
+    
+    # Extend path for each direction in route
+    for ((dx, dy), l) in route:
+        path.extend([(x + i*dx, y + i*dy) for i in range(1,l+1)])
+        x += l*dx
+        y += l*dy
     return path
     
 
@@ -38,10 +47,11 @@ f = open('input.txt')
 path1 = create_path(f.readline().split(','))
 path2 = create_path(f.readline().split(','))
 
-lp = set(path1).intersection(set(path2))
+# Intersection points
+ips = set(path1).intersection(set(path2))
 
 # Answer part 1
-print min(dist(p) for p in lp)
+print min(dist(p) for p in ips)
 
 # Answer part 2
-print min(path1.index(p) + path2.index(p) for p in lp) + 2
+print min(path1.index(p) + path2.index(p) for p in ips) + 2

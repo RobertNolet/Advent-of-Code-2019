@@ -17,10 +17,8 @@ n = 6
 [s,e] = [tuple(map(int, st)) for st in inp.split('-')]
 
 # Answer part 1
-pwds = [x for x in combr(range(10), n)   # Loop over non-decreasing seq.
-          if (s <= x <= e)               # Check range
-          and (len(set(x)) < n)]         # Check if any digit is repeated
+pwds = filter(lambda x: (s <= x <= e) and (len(set(x)) < n), combr(range(10), n)) 
 print len(pwds)
     
 # Answer part 2
-print len([x for x in pwds if any(x.count(d) == 2 for d in x)]) 
+print sum(2 in map(x.count,x) for x in pwds) 
